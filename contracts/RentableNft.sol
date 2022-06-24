@@ -2,27 +2,26 @@
 pragma solidity ^0.8.0; 
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-// import {ERC2981} from "@openzeppelin/contracts/token/common/ERC2981.sol";
-
 import "../interfaces/IERC4907.sol";
 
-contract ERC4907 is ERC721, IERC4907, ERC2981 {
+contract ERC4907 is ERC721, IERC4907 {
     struct UserInfo 
     {
         address user;   // address of user role
         uint64 expires; // unix timestamp, user expires
     }
 
+    using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
     mapping (uint256  => UserInfo) internal _users;
 
     constructor()
-     ERC721("MyTestNft","MTN")
-     {         
-        _setDefaultRoyalty(msg.sender, 500);
+     ERC721("TestRentableNfts","TRN"){
+
      }
     
     /// @notice set the user and expires of a NFT
@@ -47,7 +46,7 @@ contract ERC4907 is ERC721, IERC4907, ERC2981 {
     /// @return The user address for this NFT
     function userOf(uint256 tokenId)public view override virtual returns(address){
         if( uint256(_users[tokenId].expires) >=  block.timestamp){
-            return  _users[tokenId].user; 
+            return _users[tokenId].user; 
         }
         else{
             return address(0);
@@ -63,17 +62,18 @@ contract ERC4907 is ERC721, IERC4907, ERC2981 {
     }
 
     /// @dev See {IERC165-supportsInterface}.
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
         return interfaceId == type(IERC4907).interfaceId || super.supportsInterface(interfaceId);
     }
 
-    function nftMint() public returns (uint){
+    function nftMint() public returns (uint256){
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(msg.sender, tokenId);
-        // _setTokenURI(tokenId);
+        // _setTokenURI(tokenId, tokenId.toString());
         return tokenId;
     }
+
 
     // function _beforeTokenTransfer(
     //     address from,
