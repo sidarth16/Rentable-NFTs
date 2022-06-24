@@ -15,7 +15,7 @@ compiler:
       - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.6.0'
 
 networks:
-  default: hardhat
+  default: development
   development:
     cmd_settings:
       mnemonic: 'Brownie'
