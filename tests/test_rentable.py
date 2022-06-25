@@ -50,4 +50,6 @@ def test_renting(testNft):
     assert testNft.userOf(1) == user2.address
     assert testNft.userOf(2) == user1.address 
 
+def test_update_user
+
 
