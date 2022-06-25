@@ -29,6 +29,7 @@ contract ERC4907 is ERC721, IERC4907 {
     /// @param user  The new user of the NFT
     /// @param duration  UNIX timestamp, The new user could use the NFT before expires
     function setUser(uint256 tokenId, address user, uint64 duration) public override virtual{
+        require(userOf(tokenId)==address(0),"User already assigned");
         require(_isApprovedOrOwner(msg.sender, tokenId),"ERC721: transfer caller is not owner nor approved");
         require(duration >= 1 days, "Deficit of Min Renting Time ( 1 day )");
         require(duration <= 90 days, "Exceding Max Renting Time ( 90 days )");
