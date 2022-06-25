@@ -1,9 +1,10 @@
 from brownie import ERC4907
 from brownie import accounts, Wei
 import pytest
-# from brownie.convert import EthAddress
+from web3.constants import ADDRESS_ZERO
 
 deployer, user1, user2  = None, None, None
+DAY = 1 * 24 * 60 * 60 
 
 @pytest.fixture(scope="module")
 def testNft():
@@ -14,6 +15,7 @@ def testNft():
     return testNft
 
 def test_mint_nft(testNft):
+
     tx = testNft.nftMint({"from":user1})
     id1 = tx.return_value
     print(f'Minted NFT ( TokenId : {id1} )')
@@ -31,39 +33,21 @@ def test_mint_nft(testNft):
     assert testNft.ownerOf(2) == user2.address
 
     # check Users
-    print("testNft.userOf(1) : ",testNft.userOf(1))
-    assert testNft.userOf(1) == "0x0000000000000000000000000000000000000000"
-    assert testNft.userOf(2) == "0x0000000000000000000000000000000000000000"
+    assert testNft.userOf(1) == ADDRESS_ZERO
+    assert testNft.userOf(2) == ADDRESS_ZERO
 
 
-# contract("test", async accounts => {
+def test_renting(testNft):
+    
+    testNft.setUser(1, user2.address, 2*DAY, {"from":user1.address})
+    testNft.setUser(2, user1.address, 2*DAY, {"from":user2.address})
 
-#     it("should set user to Bob", async () => {
-#         // Get initial balances of first and second account.
-#         const Alice = accounts[0];
-#         const Bob = accounts[1];
+    # check Owners
+    assert testNft.ownerOf(1) == user1.address
+    assert testNft.ownerOf(2) == user2.address
 
-#         const instance = await ERC4907Demo.deployed("T", "T");
-#         const demo = instance;
+    # check Users
+    assert testNft.userOf(1) == user2.address
+    assert testNft.userOf(2) == user1.address 
 
-#         await demo.mint(1, Alice);
-#         let expires = Math.floor(new Date().getTime()/1000) + 1000;
-#         await demo.setUser(1, Bob, BigInt(expires));
-
-#         let user_1 = await demo.userOf(1);
-
-#         assert.equal(
-#             user_1,
-#             Bob,
-#             "User of NFT 1 should be Bob"
-#         );
-
-#         let owner_1 = await demo.ownerOf(1);
-#         assert.equal(
-#             owner_1,
-#             Alice ,
-#             "Owner of NFT 1 should be Alice"
-#         );
-#     });
-# });
 
