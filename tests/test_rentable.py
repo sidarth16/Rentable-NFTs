@@ -1,5 +1,6 @@
 from brownie import ERC4907
 from brownie import accounts, Wei
+import brownie
 import pytest
 from web3.constants import ADDRESS_ZERO
 
@@ -50,6 +51,9 @@ def test_renting(testNft):
     assert testNft.userOf(1) == user2.address
     assert testNft.userOf(2) == user1.address 
 
-def test_update_user
+def test_double_rent(testNft):
 
+    # cannot rent to two users 
+     with brownie.reverts():
+        testNft.setUser(1, user2.address, 2*DAY, {"from":user1.address})         
 
