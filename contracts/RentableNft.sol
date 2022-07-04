@@ -16,7 +16,7 @@ contract ERC4907 is ERC721, IERC4907 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
-    mapping (uint256  => UserInfo) internal _users;
+    mapping (uint256  => UserInfo) private _users;
 
     constructor()
      ERC721("TestRentableNfts","TRN"){
@@ -28,12 +28,13 @@ contract ERC4907 is ERC721, IERC4907 {
     /// Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
     /// @param duration  UNIX timestamp, The new user could use the NFT before expires
-    function setUser(uint256 tokenId, address user, uint64 duration) public override virtual{
+    function setUser(uint256 tokenId, address user, uint64 expires) public override virtual{
         require(userOf(tokenId)==address(0),"User already assigned");
         require(_isApprovedOrOwner(msg.sender, tokenId),"ERC721: transfer caller is not owner nor approved");
+        require(expires > block.timestamp, "expires should be in future");
+        uint256 duration = expires - block.timestamp;
         require(duration >= 1 days, "Deficit of Min Renting Time ( 1 day )");
         require(duration <= 90 days, "Exceding Max Renting Time ( 90 days )");
-        uint64 expires = uint64(block.timestamp + duration) ;
         UserInfo storage info =  _users[tokenId];
         info.user = user;
         info.expires = expires;
@@ -44,7 +45,7 @@ contract ERC4907 is ERC721, IERC4907 {
     /// @dev The zero address indicates that there is no user or the user is expired
     /// @param tokenId The NFT to get the user address for
     /// @return The user address for this NFT
-    function userOf(uint256 tokenId)public view override virtual returns(address){
+    function userOf(uint256 tokenId) public view override virtual returns(address){
         if( uint256(_users[tokenId].expires) >=  block.timestamp){
             return _users[tokenId].user; 
         }
@@ -70,10 +71,22 @@ contract ERC4907 is ERC721, IERC4907 {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(msg.sender, tokenId);
-        // _setTokenURI(tokenId, tokenId.toString());
         return tokenId;
     }
 
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override{
+        super._beforeTokenTransfer(from, to, tokenId);
+
+        if (from != to && _users[tokenId].user != address(0) && block.timestamp > _users[tokenId].expires) {
+            delete _users[tokenId];
+            emit UpdateUser(tokenId, address(0), 0);
+        }
+    }
 
     // function _beforeTokenTransfer(
     //     address from,
