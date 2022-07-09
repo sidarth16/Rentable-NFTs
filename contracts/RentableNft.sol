@@ -27,7 +27,7 @@ contract ERC4907 is ERC721, IERC4907 {
     /// @dev The zero address indicates there is no user 
     /// Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
-    /// @param duration  UNIX timestamp, The new user could use the NFT before expires
+    /// @param expires  UNIX timestamp, The new user could use the NFT before expires
     function setUser(uint256 tokenId, address user, uint64 expires) public override virtual{
         require(_isApprovedOrOwner(msg.sender, tokenId),"ERC721: transfer caller is not owner nor approved");
         require(userOf(tokenId)==address(0),"User already assigned");
