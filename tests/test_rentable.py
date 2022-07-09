@@ -1,37 +1,38 @@
 from brownie import ERC4907
-from brownie import accounts, Wei
+from brownie import accounts, Wei, chain
 import brownie
 import pytest
 from web3.constants import ADDRESS_ZERO
 
-deployer, user1, user2  = None, None, None
+deployer, owner1, owner2  = None, None, None
+user1, user2 = None, None
 DAY = 1 * 24 * 60 * 60 
 
 @pytest.fixture(scope="module")
 def testNft():
-    global deployer, user1, user2
-    deployer, user1, user2 = accounts[0:3]
+    global deployer, owner1, owner2, user1, user2
+    deployer, owner1, owner2, user1, user2 = accounts[0:5]
 
     testNft = ERC4907.deploy({"from":deployer})
     return testNft
 
 def test_mint_nft(testNft):
 
-    tx = testNft.nftMint({"from":user1})
+    tx = testNft.nftMint({"from":owner1})
     id1 = tx.return_value
     print(f'Minted NFT ( TokenId : {id1} )')
     
-    tx = testNft.nftMint({"from":user2})
+    tx = testNft.nftMint({"from":owner2})
     id2 = tx.return_value
     print(f'Minted NFT ( TokenId : {id2} )')
 
     # check Nft Balance
-    assert testNft.balanceOf(user1.address) == 1
-    assert testNft.balanceOf(user2.address) == 1
+    assert testNft.balanceOf(owner1.address) == 1
+    assert testNft.balanceOf(owner2.address) == 1
 
     # check Owners
-    assert testNft.ownerOf(1) == user1.address
-    assert testNft.ownerOf(2) == user2.address
+    assert testNft.ownerOf(1) == owner1.address
+    assert testNft.ownerOf(2) == owner2.address
 
     # check Users
     assert testNft.userOf(1) == ADDRESS_ZERO
@@ -40,20 +41,22 @@ def test_mint_nft(testNft):
 
 def test_renting(testNft):
     
-    testNft.setUser(1, user2.address, 2*DAY, {"from":user1.address})
-    testNft.setUser(2, user1.address, 2*DAY, {"from":user2.address})
+    rent_expire_time = chain.time() + 2*DAY
+
+    testNft.setUser(1, user1.address, rent_expire_time, {"from":owner1.address})
+    testNft.setUser(2, user2.address, rent_expire_time, {"from":owner2.address})
 
     # check Owners
-    assert testNft.ownerOf(1) == user1.address
-    assert testNft.ownerOf(2) == user2.address
+    assert testNft.ownerOf(1) == owner1.address
+    assert testNft.ownerOf(2) == owner2.address
 
     # check Users
-    assert testNft.userOf(1) == user2.address
-    assert testNft.userOf(2) == user1.address 
+    assert testNft.userOf(1) == user1.address
+    assert testNft.userOf(2) == user2.address 
 
-def test_double_rent(testNft):
+    # Check expires
+    assert testNft.userExpires(1)==rent_expire_time
+    assert testNft.userExpires(2)==rent_expire_time
 
-    # cannot rent to two users 
-     with brownie.reverts():
-        testNft.setUser(1, user2.address, 2*DAY, {"from":user1.address})         
+
 
