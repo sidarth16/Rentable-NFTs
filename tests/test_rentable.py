@@ -59,4 +59,12 @@ def test_renting(testNft):
     assert testNft.userExpires(2)==rent_expire_time
 
 
+def test_double_renting(testNft):
+
+    # Owner cannot rent a NFT to not more than 1 users 
+     with brownie.reverts("User already assigned"):
+        testNft.setUser(1, user1.address, chain.time() + 1*DAY, {"from":owner1.address})         
+        testNft.setUser(2, user2.address, chain.time() + 1*DAY, {"from":owner2.address})         
+
+
 
