@@ -66,5 +66,12 @@ def test_double_renting(testNft):
         testNft.setUser(1, user1.address, chain.time() + 1*DAY, {"from":owner1.address})         
         testNft.setUser(2, user2.address, chain.time() + 1*DAY, {"from":owner2.address})         
 
+def test_user_nft_transfer(testNft) :
 
+    # User should not be able to transfer NFTs 
+     with brownie.reverts("ERC721: transfer caller is not owner nor approved"):
+        testNft.safeTransferFrom(owner1.address, user1.address, 1, {"from":user1.address})         
+        testNft.safeTransferFrom(owner1.address, user2.address, 2, {"from":user2.address})
 
+def test_renting_expired(testNft):
+    pass
