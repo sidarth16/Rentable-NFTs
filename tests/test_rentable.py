@@ -16,7 +16,7 @@ def testNft():
     testNft = ERC4907.deploy({"from":deployer})
     return testNft
 
-def test_mint_nft(testNft):
+def test_mint(testNft):
 
     tx = testNft.nftMint({"from":owner1})
     id1 = tx.return_value
@@ -74,4 +74,17 @@ def test_user_nft_transfer(testNft) :
         testNft.safeTransferFrom(owner1.address, user2.address, 2, {"from":user2.address})
 
 def test_renting_expired(testNft):
-    pass
+
+    # After 2 days 
+    chain.sleep(2*DAY + 1)
+    chain.mine(1)
+
+     # Check expires
+    assert testNft.userExpires(1) < chain.time()
+    assert testNft.userExpires(2) < chain.time()
+
+    # check Users
+    assert testNft.userOf(1) == ADDRESS_ZERO
+    assert testNft.userOf(2) == ADDRESS_ZERO 
+
+
