@@ -4,8 +4,7 @@ import brownie
 import pytest
 from web3.constants import ADDRESS_ZERO
 
-deployer, owner1, owner2  = None, None, None
-user1, user2 = None, None
+deployer, owner1, owner2, user1, user2  = None, None, None, None, None
 DAY = 1 * 24 * 60 * 60 
 
 @pytest.fixture(scope="module")
@@ -18,6 +17,7 @@ def testNft():
 
 def test_mint(testNft):
 
+    # Mint Nfts
     tx = testNft.nftMint({"from":owner1})
     id1 = tx.return_value
     print(f'Minted NFT ( TokenId : {id1} )')
@@ -43,6 +43,7 @@ def test_renting(testNft):
     
     rent_expire_time = chain.time() + 2*DAY
 
+    # set user to the NFTs
     testNft.setUser(1, user1.address, rent_expire_time, {"from":owner1.address})
     testNft.setUser(2, user2.address, rent_expire_time, {"from":owner2.address})
 
