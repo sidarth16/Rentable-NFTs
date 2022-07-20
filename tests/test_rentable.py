@@ -1,5 +1,4 @@
-from brownie import ERC4907
-from brownie import accounts, Wei, chain
+from brownie import ERC4907, accounts, chain
 import brownie
 import pytest
 from web3.constants import ADDRESS_ZERO
@@ -72,7 +71,7 @@ def test_user_nft_transfer(testNft) :
     # User should not be able to transfer NFTs 
      with brownie.reverts("ERC721: transfer caller is not owner nor approved"):
         testNft.safeTransferFrom(owner1.address, user1.address, 1, {"from":user1.address})         
-        testNft.safeTransferFrom(owner1.address, user2.address, 2, {"from":user2.address})
+        testNft.safeTransferFrom(owner2.address, user2.address, 2, {"from":user2.address})
 
 def test_renting_expired(testNft):
 
