@@ -32,9 +32,6 @@ contract ERC4907 is ERC721, IERC4907 {
         require(_isApprovedOrOwner(msg.sender, tokenId),"ERC721: transfer caller is not owner nor approved");
         require(userOf(tokenId)==address(0),"User already assigned");
         require(expires > block.timestamp, "expires should be in future");
-        // uint256 duration = expires - block.timestamp;
-        // require(duration >= 1 days, "Deficit of Min Renting Time ( 1 day )");
-        // require(duration <= 90 days, "Exceding Max Renting Time ( 90 days )");
         UserInfo storage info =  _users[tokenId];
         info.user = user;
         info.expires = expires;
@@ -49,9 +46,7 @@ contract ERC4907 is ERC721, IERC4907 {
         if( uint256(_users[tokenId].expires) >=  block.timestamp){
             return _users[tokenId].user; 
         }
-        else{
-            return address(0);
-        }
+        return address(0);
     }
 
     /// @notice Get the user expires of an NFT
@@ -84,24 +79,12 @@ contract ERC4907 is ERC721, IERC4907 {
 
         if (
             from != to &&
-            _users[tokenId].user != address(0) &&
-            block.timestamp >= _users[tokenId].expires
+            _users[tokenId].user != address(0) &&       //user present
+            block.timestamp >= _users[tokenId].expires  //user expired
         ) {
             delete _users[tokenId];
             emit UpdateUser(tokenId, address(0), 0);
         }
     }
 
-    // function _beforeTokenTransfer(
-    //     address from,
-    //     address to,
-    //     uint256 tokenId
-    // ) internal virtual override{
-    //     super._beforeTokenTransfer(from, to, tokenId);
-
-    //     if (from != to && _users[tokenId].user != address(0)) {
-    //         delete _users[tokenId];
-    //         emit UpdateUser(tokenId, address(0), 0);
-    //     }
-    // }
 } 
