@@ -1,11 +1,11 @@
 # Rentable-NFTs
 
-Mock Implementation of the Rentable NFTs ( [EIP 4907](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-4907.md) )
+Mock Implementation of the Rentable NFTs ( [EIP 4907](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-4907.md) ) <br/>
 Also check out : https://bit.ly/3B1CP1v
 
 <br/>
 
-<img src="img.gif" width="350" title="Rentable NFTs" alt="Rentable NFTs"/>
+<img src="img.gif" title="Rentable NFTs" alt="Rentable NFTs"/>
 
 <br/>
 
