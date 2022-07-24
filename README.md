@@ -1,7 +1,7 @@
 # Rentable-NFTs
 
 Mock Implementation of the [EIP 4907](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-4907.md): Rentable NFTs <br/>
-Also check out : https://bit.ly/3B1CP1v
+Also check out : [https://medium.com/@sidarths/list/rentable-nfts](https://medium.com/@sidarths/list/rentable-nfts-83a91175880a)
 
 <br/>
 
@@ -10,8 +10,8 @@ Also check out : https://bit.ly/3B1CP1v
 <br/>
 
 
-# EIP 4907
-EIP4907 is an extension of ERC-721, specially designed for NFT Renting.<br/> 
+# ERC 4907
+ERC4907 is an extension of ERC-721, specially designed for NFT Renting.<br/> 
 It proposes an additional role : **user** and a valid duration indicator : **expires**.<br/>
 It allows users and developers manage the rentable usage rights,  more simple and efficient.
 
@@ -29,8 +29,8 @@ It allows users and developers manage the rentable usage rights,  more simple an
 
 <br/>
 
-# Reference Links:
-Check out my blogs for better understanding and detailed code walkthrough
-- Rentable NFTs Complete Series : https://bit.ly/3B1CP1v
-- Rentable NFTs Part1 : https://bit.ly/3cuFeHA
-- Rentable NFTs Part2 : https://bit.ly/3cuHSNR
+# Additional References :
+Check out my **Medium** blogs for better understanding and detailed code walkthrough
+- Rentable NFTs Complete List : https://medium.com/@sidarths/list/rentable-nfts-83a91175880a
+- Rentable NFTs Part1 :  https://medium.com/@sidarths/rentable-nfts-erc-4907-949225d476a9 
+- Rentable NFTs Part2 : https://medium.com/@sidarths/rentable-nfts-erc-4907-part-ii-954cc27d22e9
